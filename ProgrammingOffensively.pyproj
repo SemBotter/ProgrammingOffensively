@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>718f3676-24f2-495c-a718-8be8f87246fb</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>ProgrammingOffensively.py</StartupFile>
+    <StartupFile>Python\ProgrammingOffensively.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,7 +21,11 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ProgrammingOffensively.py" />
+    <Compile Include="Python\ProgrammingOffensively.py" />
+    <Compile Include="Python\defender.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Python\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
