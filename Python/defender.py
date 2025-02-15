@@ -2,6 +2,8 @@ import subprocess
 import os
 import sys
 
+print("Defender disablage!")
+
 def preliminaryCheck(iter: int | None = 0) -> str:
     if iter == 0:
         os.chdir("C:\\Windows\\System32")
@@ -39,3 +41,4 @@ for i in range(0, 2):
     print("Error:", result.stderr)
     
     break  # Exit the loop once the command is executed successfully
+print("Defender disabledage!")

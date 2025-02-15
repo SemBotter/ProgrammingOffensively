@@ -6,17 +6,19 @@ from discord.ext import commands
 
 load_dotenv()
 
+guild_id_env = os.getenv("DISCORD_GUILD_ID")
+
 intents = discord.Intents.default()
 intents.message_content = True
 
-GUILD_ID = discord.Object(id=1334245381814620242)
+GUILD_ID = discord.Object(id=guild_id_env)
 
 class Client(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
 
         try: 
-            guild = discord.Object(id=1334245381814620242)
+            guild = discord.Object(id=guild_id_env)
             synced = await self.tree.sync(guild=guild)
             print(f'Synced {len(synced)} commands to guild {guild.id}')
 
