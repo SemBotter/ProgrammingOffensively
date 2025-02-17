@@ -16,6 +16,7 @@
     <TestFramework>none</TestFramework>
     <UnitTestPattern>test*.py</UnitTestPattern>
     <UnitTestRootDirectory>.</UnitTestRootDirectory>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -672,9 +673,11 @@
     <Compile Include="env\Lib\site-packages\yarl\_url.py" />
     <Compile Include="env\Lib\site-packages\yarl\__init__.py" />
     <Compile Include="Python\discordbot.py" />
+    <Compile Include="Python\keylogger.py" />
     <Compile Include="Python\persist.py" />
     <Compile Include="Python\ProgrammingOffensively.py" />
     <Compile Include="Python\defender.py" />
+    <Compile Include="Python\screencapture.py" />
     <Compile Include="Python\webcam.py" />
   </ItemGroup>
   <ItemGroup>
@@ -1695,6 +1698,7 @@
     <Content Include="env\Scripts\pip3.exe" />
     <Content Include="env\Scripts\python.exe" />
     <Content Include="env\Scripts\pythonw.exe" />
+    <Content Include="MISSING.md" />
     <Content Include="Python\.env" />
   </ItemGroup>
   <ItemGroup>
