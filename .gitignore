@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 Python/.env
 /Python/WebcamCaptures
+/Python/ScreenShots
