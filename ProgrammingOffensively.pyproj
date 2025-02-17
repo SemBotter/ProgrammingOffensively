@@ -675,6 +675,7 @@
     <Compile Include="Python\persist.py" />
     <Compile Include="Python\ProgrammingOffensively.py" />
     <Compile Include="Python\defender.py" />
+    <Compile Include="Python\webcam.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="env\" />
