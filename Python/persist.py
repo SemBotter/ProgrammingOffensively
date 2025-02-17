@@ -1,3 +1,4 @@
+from ctypes import ArgumentError
 import sys
 import winreg as reg
 
@@ -34,17 +35,20 @@ Explanation of the Parameters:
 <PROGRAMNAME>   Name of the program to be removed from running on startup
 """
 
-def add_to_startup_registry(program_name, program_path, background):
+def add_to_startup_registry(program_name, program_path, background: bool=False):
     try:
         key = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
         registry_key = reg.OpenKey(reg.HKEY_CURRENT_USER, key, 0, reg.KEY_SET_VALUE)
+        _ = ""
         match background:
             case True:
                 reg_key_value = f"\"{program_path}\" /background"
+                _ = "It will be a background program!"
             case False:
                 reg_key_value = program_path
         reg.SetValueEx(registry_key, program_name, 0, reg.REG_SZ, reg_key_value)
         print(f"{program_name} is set for persistence")
+        print(_)
         reg.CloseKey(registry_key)
     except Exception as e:
         print(f"Error persisting {program_name}: {e}")
@@ -61,52 +65,59 @@ def remove_from_startup_registry(program_name):
 #programma = "NotePad++"
 #programma_pad = "C:\\Program Files\\Notepad++\\notepad++.exe"
 
-programma = ""
-programma_pad = ""
-bg = False
+if __name__ == "__main__":
+    programma = ""
+    programma_pad = ""
+    bg = False
 
-operation = sys.argv[1]
-if operation == "add":
+    operation = sys.argv[1]
+    if operation == "add":
 
 
-    try:
-        for i in range(len(sys.argv[2:])):
-            match sys.argv[i]:
-                case "-program":
-                    programma = sys.argv[i+1]
-                    continue
-                case "-path":
-                    programma_pad = sys.argv[i+1]
-                    continue
-                case "-background":
-                    bg = True
-                    continue
-        if programma != "" and programma_pad != "":
-            add_to_startup_registry(programma, programma_pad, bg)
-        else:
+        try:
+            for i in range(len(sys.argv)):
+                match sys.argv[i]:
+                    case "-program":
+                        programma = sys.argv[i+1]
+                        continue
+                    case "-path":
+                        programma_pad = sys.argv[i+1]
+                        continue
+                    case "-background":
+                        bg = True
+                        continue
+                    case "-bg":
+                        bg = True
+                        continue
+            if programma != "" and programma_pad != "":
+                try:
+                    add_to_startup_registry(programma, programma_pad, bg)
+                except ArgumentError as e:
+                    add_to_startup_registry(programma, programma_pad)
+            else:
+                print(helpMSGADD)
+        except IndexError as e:
             print(helpMSGADD)
-    except IndexError as e:
-        print(helpMSGADD)
-        print(e)
-        print("Did you specify all values?")
-    except NameError as e:
-        print(e)
-        print("Something ain't right, you sure all was right?")
+            print(e)
+            print("Did you specify all values?")
+        except NameError as e:
+            print(e)
+            print("Something ain't right, you sure all was right?")
 
-elif operation == "remove":
-    try:
+    elif operation == "remove":
+        try:
       
-        programma = sys.argv[2]
-        if programma != "":
-            remove_from_startup_registry(programma)
-        else:
-            print(sys.argv)
-            print(programma, sep="\n")
-            print(helpMSGREM + "1")
-    except IndexError as e:
-        print(helpMSGREM)
-        print(e)
-        print("Did you specify all values?")
-    except NameError as e:
-        print(e)
-        print("Something went wrong, try again!")
+            programma = sys.argv[2]
+            if programma != "":
+                remove_from_startup_registry(programma)
+            else:
+                print(sys.argv)
+                print(programma, sep="\n")
+                print(helpMSGREM + "1")
+        except IndexError as e:
+            print(helpMSGREM)
+            print(e)
+            print("Did you specify all values?")
+        except NameError as e:
+            print(e)
+            print("Something went wrong, try again!")

