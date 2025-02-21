@@ -367,3 +367,7 @@ Python/.env
 Python/Scripts
 /Python/downloads
 /Python/AudioCaptures
+Python/USBFolder/AUTORUN.exe.spec
+/Python/USBFolder/build
+/Python/USBFolder/dist
+*.exe

