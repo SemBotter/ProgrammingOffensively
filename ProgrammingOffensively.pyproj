@@ -679,7 +679,9 @@
     <Compile Include="Python\ProgrammingOffensively.py" />
     <Compile Include="Python\defender.py" />
     <Compile Include="Python\screencapture.py" />
+    <Compile Include="Python\TestVasion.py" />
     <Compile Include="Python\ThreadManager.py" />
+    <Compile Include="Python\USBFolder\autorun.py" />
     <Compile Include="Python\webcam.py" />
   </ItemGroup>
   <ItemGroup>
@@ -1704,7 +1706,7 @@
     <Content Include="MISSING.md" />
     <Content Include="Python\.env" />
     <Content Include="Python\run_discordbot.bat" />
-    <Content Include="Python\USBFolder\autorun.inf" />
+    <Content Include="Python\USBFolder\Autorun.inf" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
