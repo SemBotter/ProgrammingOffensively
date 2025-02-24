@@ -35,9 +35,13 @@ def getSettled(targetDir):
     
     # Activate the virtual environment and install packages
     activate_script = os.path.join(venv_dir, "Scripts", "activate.bat")
-    pip_install_cmd = f"{activate_script} && pip install discord aiohttp pillow legacy-cgi audioop-lts pynput python-dotenv opencv-python"
+    pip_install_cmd = f"{activate_script}" # "; pip install intents aiohttp pillow legacy-cgi audioop-lts pynput python-dotenv opencv-python git+https://github.com/Rapptz/discord.py@master"
     goAhead = subprocess.run(pip_install_cmd, shell=True, capture_output=True)
+    env = os.environ
+    goAhead2 = subprocess.Popen("python.exe -m pip install pillow pynput python-dotenv opencv-python", shell=True, env=env)
+    goAhead3 = subprocess.Popen("python.exe -m pip install git+https://github.com/Rapptz/discord.py@master", shell=True, env=env)
     print(goAhead.stdout.decode(), goAhead.stderr.decode(), sep="\n\n\n")
+ 
 
 def Activated(targetDir):
     import persist
