@@ -1,33 +1,34 @@
-:: @echo off
+@echo off
 :: Check for elevated permissions
-::net session >nul 2>&1
+net session >nul 2>&1
 if %errorLevel% == 0 (
     echo Running with elevated permissions
-    pause
-) else (
+)else (
     echo Requesting elevated permissions
-    pause
     powershell -Command "Start-Process cmd -ArgumentList '/c %~dp0run_discordbot.bat elevated' -Verb RunAs"
     exit /b
 )
 
-:: Check if running with elevated permissions
-if %errorLevel%==0 (
-    shift
-) else (
-    echo This script must be run with elevated permissions.
-    exit /b
-)
 set "SCRIPTS_DIR=&&CURDIR&&"
 set "VIRTUAL_ENV=&&VENVDIR&&"
+
 :: Change to the directory of the script
-cd /d %SCRIPTS_DIR%
+cd /d %SCRIPTS_DIR% || (
+    echo Failed to change directory to %SCRIPTS_DIR%
+    start explorer %cd%
+    exit /b 1
+)
 
 :: Debugging output
 echo Current directory: %cd%
 echo Activating virtual environment...
 
 :: Activate the environment
+if not exist "%VIRTUAL_ENV%\Scripts\activate.bat" (
+    echo Virtual environment not found at %VIRTUAL_ENV%
+    start explorer %cd%
+    exit /b 1
+)
 
 rem This file is UTF-8 encoded, so we need to update the current code page while executing it
 for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do (
@@ -55,32 +56,28 @@ set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
 set "VIRTUAL_ENV_PROMPT=venv"
 
 :: Debugging output
-echo PATH=%PATH%
-echo VIRTUAL_ENV=%VIRTUAL_ENV%
+::echo PATH=%PATH%
+::echo VIRTUAL_ENV=%VIRTUAL_ENV%
 
 :END
 if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" %_OLD_CODEPAGE% > nul
     set _OLD_CODEPAGE=
 )
+::exit /b 0
 
 echo Virtual environment activated
 
 :: Installing dependencies using PIP
-echo Installing dependencies
-@echo on
-python.exe -m pip install pillow pynput python-dotenv opencv-python pyaudio
-python.exe -m pip install git+https://github.com/Rapptz/discord.py@master
-@echo off
+echo Installing dependencies...
 
-
-
+python.exe -m pip install pillow pynput python-dotenv opencv-python pyaudio >nul 2>&1
+python.exe -m pip install git+https://github.com/Rapptz/discord.py@master  >nul 2>&1
 :: Debugging output
 echo Running discordbot.py...
-
 :: Run the discordbot.py script
-python discordbot.py
+discordbot.py
 
 :: Debugging output
 echo Finished running discordbot.py
-pause
+

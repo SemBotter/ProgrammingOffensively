@@ -33,6 +33,7 @@ class webcam(object):
             return "NoImageSavedError"
 
         self.out_name = "webcamcapture({}).png".format(time.strftime("%H-%M-%S_%Y-%m-%d"))
+        os.getcwd()
         os.chdir(".\\WebcamCaptures")
         try:
             writeimg = cv2.imwrite(self.out_name, frame)
