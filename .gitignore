@@ -371,3 +371,6 @@ Python/USBFolder/AUTORUN.exe.spec
 /Python/USBFolder/build
 /Python/USBFolder/dist
 *.exe
+/PythonTests
+/Python/test_1.py
+/Python/__init__.py
