@@ -376,6 +376,3 @@ Python/USBFolder/AUTORUN.exe.spec
 /Python/__init__.py
 /build/ProgrammingOffensively
 /dist/ProgrammingOffensively/_internal
-/Python/build/ProgrammingOffensively
-/Python/dist/ProgrammingOffensively/_internal
-/venv
