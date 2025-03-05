@@ -29,7 +29,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Python\USBFolder\autorun.py" />
+    <Compile Include="src\Common.pyw" />
     <Compile Include="src\defender.py" />
+    <Compile Include="src\dhcpstarvation.py" />
     <Compile Include="src\discordbot.py" />
     <Compile Include="src\keylogger.py" />
     <Compile Include="src\MicrophoneTap.py" />

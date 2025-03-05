@@ -71,7 +71,7 @@ echo Virtual environment activated
 :: Installing dependencies using PIP
 echo Installing dependencies...
 
-python.exe -m pip install pillow pynput python-dotenv opencv-python pyaudio >nul 2>&1
+python.exe -m pip install pillow pynput python-dotenv opencv-python pyaudio scapy >nul 2>&1
 python.exe -m pip install git+https://github.com/Rapptz/discord.py@master  >nul 2>&1
 :: Debugging output
 echo Running discordbot.py...

