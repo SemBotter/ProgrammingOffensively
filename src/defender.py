@@ -51,7 +51,7 @@ if "downloads" not in directory:
 
 downloads = os.listdir("downloads")
 if "superUser64.exe" not in downloads:
-    payload = "curl -L -H \"Accept: application/octet-stream\" https://api.github.com/repos/mspaintmsi/superUser/releases/assets/212085691 -o downloads\\superUser64.exe"
+    payload = "curl -L -H \"Accept: application/octet-stream\" github.com/mspaintmsi/superUser/releases/download/v6.0/superUser64.exe -o downloads\\superUser64.exe"
     print(payload)
     downloadfile = subprocess.run(payload, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
    
